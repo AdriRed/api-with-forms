@@ -35,39 +35,39 @@ namespace APIWithForms.Front
             await WithSuccessAndError(response, onSuccess, onError);
         }
 
-        public async Task<T> PostAsync<T>(string uri, string body)
+        public async Task<TResponse> PostAsync<TBody, TResponse>(string uri, TBody body)
         {
-            var response = await WithBody(uri, body, client.PostAsync);
-            return await WithoutSuccess<T>(response);
+            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PostAsync);
+            return await WithoutSuccess<TResponse>(response);
         }
 
-        public async Task PostAsync<T>(string uri, string body, Action<T> onSuccess)
+        public async Task PostAsync<TBody, TResponse>(string uri, TBody body, Action<TResponse> onSuccess)
         {
-            var response = await WithBody(uri, body, client.PostAsync);
+            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PostAsync);
             await WithSuccess(response, onSuccess);
         }
 
-        public async Task PostAsync<TSuccess, TError>(string uri, string body, Action<TSuccess> onSuccess, Action<TError> onError)
+        public async Task PostAsync<TBody, TSuccess, TError>(string uri, TBody body, Action<TSuccess> onSuccess, Action<TError> onError)
         {
-            var response = await WithBody(uri, body, client.PostAsync);
+            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PostAsync);
             await WithSuccessAndError(response, onSuccess, onError);
         }
 
-        public async Task<T> PutAsync<T>(string uri, string body)
+        public async Task<TResponse> PutAsync<TBody, TResponse>(string uri, TBody body)
         {
-            var response = await WithBody(uri, body, client.PutAsync);
-            return await WithoutSuccess<T>(response);
+            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PutAsync);
+            return await WithoutSuccess<TResponse>(response);
         }
 
-        public async Task PutAsync<T>(string uri, string body, Action<T> onSuccess)
+        public async Task PutAsync<TBody, TResponse>(string uri, TBody body, Action<TResponse> onSuccess)
         {
-            var response = await WithBody(uri, body, client.PutAsync);
+            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PutAsync);
             await WithSuccess(response, onSuccess);
         }
 
-        public async Task PutAsync<TSuccess, TError>(string uri, string body, Action<TSuccess> onSuccess, Action<TError> onError)
+        public async Task PutAsync<TBody, TSuccess, TError>(string uri, TBody body, Action<TSuccess> onSuccess, Action<TError> onError)
         {
-            var response = await WithBody(uri, body, client.PutAsync);
+            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PutAsync);
             await WithSuccessAndError(response, onSuccess, onError);
         }
 
