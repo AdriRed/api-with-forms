@@ -58,6 +58,7 @@
     <Compile Include="AddHexForm.Designer.cs">
       <DependentUpon>AddHexForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ApiManager.cs" />
     <Compile Include="ColorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
