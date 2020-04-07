@@ -13,7 +13,7 @@ namespace APIWithForms.Front
 {
     public partial class ColorsForm : Form
     {
-        private static HttpClient client = new HttpClient();
+        private ApiManager api;
         private readonly string API_URL;
         private bool adding = false;
         private HashSet<int> editedIds;
@@ -25,16 +25,17 @@ namespace APIWithForms.Front
             InitializeComponent();
         }
 
-        public ColorsForm(string apiUrl) : this()
+        public ColorsForm(string apiUrl, HttpClient client) : this()
         {
             API_URL = apiUrl;
+            api = new ApiManager(client);
         }
 
         private void ColorsForm_Load(object sender, EventArgs e)
         {
             this.FormClosing += (s, ev) =>
             {
-                client.Dispose();
+                api.Dispose();
             };
             OnChangeNUD();
             bsc_list.ListChanged += ItemChanged;
@@ -161,62 +162,38 @@ namespace APIWithForms.Front
 
         #endregion
 
-        #region Respostes API
+        #region Trucades API
 
-        private void ManageDelete(Task<string> obj)
+        public async Task GetColors()
         {
-            GetColors();
-        }
-
-        private void ManageGet(Task<string> obj)
-        {
-            string result = obj.Result;
-
-            Colors = JsonConvert.DeserializeObject<Models.UserColorModel[]>(result).ToList();
-
-            lbx_colors.Invoke((self) =>
+            await api.GetAsync<UserColorModel[]>(API_URL + "/api/usercolors", (result) =>
             {
-                //self.Items.Clear();
-                //self.Items.AddRange(colors.Select(x => x.Name).ToArray());
-                getting = true;
-                AddDataBindings();
-                getting = false;
+                editedIds = new HashSet<int>();
+                Colors = result.ToList();
+                lbx_colors.Invoke((self) =>
+                {
+                    //self.Items.Clear();
+                    //self.Items.AddRange(colors.Select(x => x.Name).ToArray());
+                    getting = true;
+                    AddDataBindings();
+                    getting = false;
 
 
+                });
             });
         }
 
-        private void ManagePostPut(HttpResponseMessage result)
+        private async Task PostColor(UserColorModel color)
         {
-            if (!result.IsSuccessStatusCode)
-            {
-                MessageBox.Show(result.ReasonPhrase);
-            }
+            await api.PostAsync<UserColorModel, UserColorModel>(API_URL + "/api/usercolors", color);
         }
 
-        #endregion
-
-        #region Trucades API
-
-        public void GetColors()
+        private async Task PutColor(UserColorModel color)
         {
-            editedIds = new HashSet<int>();
-            client.GetAsync(API_URL + "/api/usercolors").ContinueWith((response) => response.Result.Content.ReadAsStringAsync().ContinueWith(ManageGet));
+            await api.PutAsync<UserColorModel, UserColorModel>(API_URL + "/api/usercolors/" + color.Id, color);
         }
 
-        private Task PostColor(UserColorModel color)
-        {
-            return client.PostAsync(API_URL + "/api/usercolors", new StringContent(JsonConvert.SerializeObject(color), Encoding.UTF8, "application/json"))
-                .ContinueWith((response) => ManagePostPut(response.Result));
-        }
-
-        private Task PutColor(UserColorModel color)
-        {
-            return client.PutAsync(API_URL + "/api/usercolors/" + color.Id, new StringContent(JsonConvert.SerializeObject(color), Encoding.UTF8, "application/json"))
-                .ContinueWith((response) => ManagePostPut(response.Result));
-        }
-
-        private void DeleteColor(Models.UserColorModel color)
+        private async Task DeleteColor(UserColorModel color)
         {
             if (color.Id == -1)
             {
@@ -224,8 +201,10 @@ namespace APIWithForms.Front
             }
             else
             {
-                client.DeleteAsync(API_URL + "/api/usercolors/" + color.Id)
-               .ContinueWith((response) => response.Result.Content.ReadAsStringAsync().ContinueWith(ManageDelete));
+                await api.DeleteAsync<UserColorModel>(API_URL + "/api/usercolors/" + color.Id, async (deleted) =>
+                {
+                    await GetColors();
+                });
             }
 
         }
@@ -263,13 +242,14 @@ namespace APIWithForms.Front
                 Blue = c.B
             };
 
-            bsc_list.Add(color);
+            Colors.Add(color);
+            AddDataBindings();
 
         }
 
         private void AddElement()
         {
-            Colors.Add(new Models.UserColorModel
+            Colors.Add(new UserColorModel
             {
                 Id = -1,
                 Name = tbx_colorName.Text,

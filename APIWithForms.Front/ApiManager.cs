@@ -37,37 +37,37 @@ namespace APIWithForms.Front
 
         public async Task<TResponse> PostAsync<TBody, TResponse>(string uri, TBody body)
         {
-            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PostAsync);
+            var response = await WithBody(uri, body, client.PostAsync);
             return await WithoutSuccess<TResponse>(response);
         }
 
         public async Task PostAsync<TBody, TResponse>(string uri, TBody body, Action<TResponse> onSuccess)
         {
-            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PostAsync);
+            var response = await WithBody(uri, body, client.PostAsync);
             await WithSuccess(response, onSuccess);
         }
 
         public async Task PostAsync<TBody, TSuccess, TError>(string uri, TBody body, Action<TSuccess> onSuccess, Action<TError> onError)
         {
-            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PostAsync);
+            var response = await WithBody(uri, body, client.PostAsync);
             await WithSuccessAndError(response, onSuccess, onError);
         }
 
         public async Task<TResponse> PutAsync<TBody, TResponse>(string uri, TBody body)
         {
-            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PutAsync);
+            var response = await WithBody(uri, body, client.PutAsync);
             return await WithoutSuccess<TResponse>(response);
         }
 
         public async Task PutAsync<TBody, TResponse>(string uri, TBody body, Action<TResponse> onSuccess)
         {
-            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PutAsync);
+            var response = await WithBody(uri, body, client.PutAsync);
             await WithSuccess(response, onSuccess);
         }
 
         public async Task PutAsync<TBody, TSuccess, TError>(string uri, TBody body, Action<TSuccess> onSuccess, Action<TError> onError)
         {
-            var response = await WithBody(uri, JsonConvert.SerializeObject(body), client.PutAsync);
+            var response = await WithBody(uri, body, client.PutAsync);
             await WithSuccessAndError(response, onSuccess, onError);
         }
 
@@ -130,16 +130,16 @@ namespace APIWithForms.Front
             return await request.Invoke(uri);
         }
 
-        private async Task<HttpResponseMessage> WithBody(string uri, string body, Func<string, HttpContent, Task<HttpResponseMessage>> request)
+        private async Task<HttpResponseMessage> WithBody<T>(string uri, T body, Func<string, HttpContent, Task<HttpResponseMessage>> request)
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
             return await request.Invoke(uri, content);
         }
 
-        private async Task ManageResponse<T>(HttpContent body, Action<T> onSerialization = null)
+        private async Task ManageResponse<T>(HttpContent body, Action<T> onSerialization)
         {
             T content = await GetContent<T>(body);
-            onSerialization.Invoke(content);
+            onSerialization?.Invoke(content);
         }
 
         #endregion

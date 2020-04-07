@@ -30,7 +30,7 @@ namespace APIWithForms.Front
         {
             if (obj.Result.IsSuccessStatusCode)
             {
-                ColorsForm form = new ColorsForm(tbx_url.Text);
+                ColorsForm form = new ColorsForm(tbx_url.Text, client);
                 form.FormClosed += (s, ev) =>
                 {
                     client.Dispose();
