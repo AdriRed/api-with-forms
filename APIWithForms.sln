@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIWithForms.Models", "APIWithForms.Models\APIWithForms.Models.csproj", "{38612C2A-B218-408A-BD1E-A7FB55CAA8F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIWithForms.Front", "APIWithForms.Front\APIWithForms.Front.csproj", "{307E38F9-104A-4177-9B7E-48A60BB8A1D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38612C2A-B218-408A-BD1E-A7FB55CAA8F0} = {38612C2A-B218-408A-BD1E-A7FB55CAA8F0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
