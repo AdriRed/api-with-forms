@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,7 +122,7 @@ namespace APIWithForms.Front
         private async Task<T> GetContent<T>(HttpContent content) 
         {
             string body = await content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(body);
+            return JsonSerializer.Deserialize<T>(body, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         }
 
         private async Task<HttpResponseMessage> NoBody(string uri, Func<string, Task<HttpResponseMessage>> request)
@@ -132,7 +132,7 @@ namespace APIWithForms.Front
 
         private async Task<HttpResponseMessage> WithBody<T>(string uri, T body, Func<string, HttpContent, Task<HttpResponseMessage>> request)
         {
-            StringContent content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
             return await request.Invoke(uri, content);
         }
 

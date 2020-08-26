@@ -30,9 +30,10 @@ namespace APIWithForms.API
             services.AddControllers();
 
             services.AddDbContext<DatabaseContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DatabaseContext")));
+                    options.UseSqlite(Configuration.GetConnectionString("Sqlite"))
+            );
 
-            services.AddTransient<DatabaseSeeder>();
+            services.AddScoped<DatabaseSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

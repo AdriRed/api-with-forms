@@ -2,7 +2,7 @@
 
 namespace APIWithForms.API.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,13 +10,13 @@ namespace APIWithForms.API.Migrations
                 name: "UserColors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    Alpha = table.Column<byte>(nullable: false),
-                    Red = table.Column<byte>(nullable: false),
-                    Green = table.Column<byte>(nullable: false),
-                    Blue = table.Column<byte>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Alpha = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Red = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Green = table.Column<byte>(type: "INTEGER", nullable: false),
+                    Blue = table.Column<byte>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

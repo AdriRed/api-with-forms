@@ -15,6 +15,13 @@ namespace APIWithForms.API.Data
 
         }
 
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+        //    optionsBuilder.UseSqlite($"Data Source=C:\\colors.db");
+        //    throw new Exception("Not allowed entry. Custom exception.");
+        //}
+
         public DbSet<UserColor> UserColors { get; set; }
     }
 }
